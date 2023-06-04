@@ -10,23 +10,16 @@ public class FileSearch {
     // 如果指定的文件不存在或者无法被读取，抛出一个IllegalArgumentException。
     // 请不要让这个方法抛出checked exception
     public static int grep(File target, String text) {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(target));
+        try (BufferedReader br = new BufferedReader(new FileReader(target))) {
             String line;
-            int lineNum = 1;
-            boolean flag = false;
+            int lineNum = 0;
             while ((line = br.readLine()) != null) {
-                if (line.contains(text)) {
-                    flag = true;
-                    break;
-                }
                 lineNum += 1;
+                if (line.contains(text)) {
+                    return lineNum;
+                }
             }
-            if (flag) {
-                return lineNum;
-            } else {
-                return -1;
-            }
+            return -1;
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
